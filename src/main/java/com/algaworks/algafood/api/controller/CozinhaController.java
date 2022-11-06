@@ -2,7 +2,6 @@ package com.algaworks.algafood.api.controller;
 
 import java.util.List;
 
-import org.apache.catalina.connector.Response;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -19,11 +18,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.repository.CozinhaRepository;
+import com.algaworks.algafood.domain.service.CadastroCozinhaService;
 
 @RestController
 @RequestMapping("/cozinhas")
 public class CozinhaController {
     
+    @Autowired
+    private CadastroCozinhaService cadastroCozinha;
+
     @Autowired
     private CozinhaRepository cozinhaRepository;
 
@@ -45,7 +48,7 @@ public class CozinhaController {
 
     @PostMapping
     public ResponseEntity<Cozinha> adicionar(@RequestBody Cozinha cozinha) {
-        Cozinha cozinhaSalva = cozinhaRepository.salvar(cozinha);
+        Cozinha cozinhaSalva = cadastroCozinha.salvar(cozinha);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(cozinhaSalva);
     }
