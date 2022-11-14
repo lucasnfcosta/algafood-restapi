@@ -36,12 +36,12 @@ public class ConsultaCozinhaMain {
 
         // System.out.println(buscaCozinha.getNome());
 
-        Cozinha cozinha = new Cozinha();
-        cozinha.setId(1L);
-        cozinha.setNome("Peruana");
+        // Cozinha cozinha = new Cozinha();
+        // cozinha.setId(1L);
+        // cozinha.setNome("Peruana");
 
-        cadastroCozinha.salvar(cozinha);
-        cadastroCozinha.remover(cozinha);
+        // cadastroCozinha.salvar(cozinha);
+        // cadastroCozinha.remover(cozinha);
 
     }
 }
