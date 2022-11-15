@@ -2,12 +2,14 @@ package com.algaworks.algafood.api.controller;
 
 import java.util.List;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -45,12 +47,30 @@ public class RestauranteController {
 
     @PostMapping
     public ResponseEntity<?> adicionar(@RequestBody Restaurante restaurante) {
-    try {
-        Restaurante restauranteSalvo = cadastroRestaurante.salvar(restaurante);
+        try {
+            Restaurante restauranteSalvo = cadastroRestaurante.salvar(restaurante);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(restauranteSalvo);
-    } catch (EntidadeNaoExisteException e) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.CREATED).body(restauranteSalvo);
+        } catch (EntidadeNaoExisteException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
+
+    @PutMapping("/{restauranteId}")
+    public ResponseEntity<?> atualizar(@PathVariable("restauranteId") Long id, @RequestBody Restaurante restaurante) {
+        try {
+            Restaurante restauranteAtual = restauranteRepository.buscar(id);
+            if (restauranteAtual != null) {
+                BeanUtils.copyProperties(restaurante, restauranteAtual, "id");
+    
+                restauranteAtual = cadastroRestaurante.salvar(restauranteAtual);
+                return ResponseEntity.ok(restauranteAtual);
+            }
+            
+            return ResponseEntity.notFound().build();
+        } catch (EntidadeNaoExisteException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+
     }
 }
