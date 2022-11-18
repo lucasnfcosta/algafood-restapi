@@ -1,9 +1,11 @@
 package com.algaworks.algafood.domain.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
+import com.algaworks.algafood.domain.exception.EntidadeEmUsoException;
 import com.algaworks.algafood.domain.exception.EntidadeNaoExisteException;
 import com.algaworks.algafood.domain.model.Cidade;
 import com.algaworks.algafood.domain.model.Estado;
@@ -36,6 +38,8 @@ public class CadastroCidadeService {
             cidadeRepository.remover(id);
         } catch (EmptyResultDataAccessException e) {
             throw new EntidadeNaoExisteException(String.format("A cidade de id %d não existe", id));
+        } catch (DataIntegrityViolationException e) {
+            throw new EntidadeEmUsoException(String.format("A cidade de id %d está em uso", id));
         }
     }
 }
