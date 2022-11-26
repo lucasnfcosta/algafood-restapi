@@ -1,5 +1,7 @@
 package com.algaworks.algafood.domain.service;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,12 +22,11 @@ public class CadastroRestauranteService {
 
     public Restaurante salvar(Restaurante restaurante) {
         Long cozinhaId = restaurante.getCozinha().getId();
-        Cozinha cozinha = cozinhaRepository.buscar(cozinhaId);
-
-        if (cozinha == null) {
-            throw new EntidadeNaoExisteException(
-                String.format("Cozinha com id %d não existe", cozinhaId));
-        }
+        Cozinha cozinha = cozinhaRepository.findById(cozinhaId)
+            .orElseThrow(() -> new EntidadeNaoExisteException(
+                String.format("Cozinha com id %d não existe", cozinhaId)));
+        
+        restaurante.setCozinha(cozinha);
 
         return restauranteRepository.salvar(restaurante);
     }
