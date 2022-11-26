@@ -29,13 +29,13 @@ public class CadastroCidadeService {
             throw new EntidadeNaoExisteException(String.format("Estado com o id %d não existe", estadoId));
         }
 
-        return cidadeRepository.salvar(cidade);
+        return cidadeRepository.save(cidade);
         
     }
 
     public void remover(Long id) {
         try {
-            cidadeRepository.remover(id);
+            cidadeRepository.deleteById(id);
         } catch (EmptyResultDataAccessException e) {
             throw new EntidadeNaoExisteException(String.format("A cidade de id %d não existe", id));
         } catch (DataIntegrityViolationException e) {
