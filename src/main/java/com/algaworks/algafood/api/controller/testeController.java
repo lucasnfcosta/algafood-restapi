@@ -1,7 +1,5 @@
 package com.algaworks.algafood.api.controller;
 
-import static com.algaworks.algafood.infrastructure.repository.spec.RestauranteSpecs.*;
-
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +20,7 @@ public class testeController {
     @GetMapping("/restaurantes/com-frete-gratis")
     public List<Restaurante> restaurantesComFreteGratis(String nome) {
 
-        return restauranteRepository.findAll(comFreteGratis().and(comNomeSemelhante(nome)));
+        return restauranteRepository.findComFreteGratis(nome);
     }
 
 }
