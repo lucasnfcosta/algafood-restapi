@@ -19,6 +19,7 @@ public class CadastroRestauranteService {
     private CozinhaRepository cozinhaRepository;
 
     public Restaurante salvar(Restaurante restaurante) {
+        System.out.println(restaurante.getCozinha().getNome());
         Long cozinhaId = restaurante.getCozinha().getId();
         Cozinha cozinha = cozinhaRepository.findById(cozinhaId)
             .orElseThrow(() -> new EntidadeNaoExisteException(
