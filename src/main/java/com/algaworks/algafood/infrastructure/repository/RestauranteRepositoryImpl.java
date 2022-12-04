@@ -4,9 +4,7 @@ import static com.algaworks.algafood.infrastructure.repository.spec.RestauranteS
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
