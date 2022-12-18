@@ -14,9 +14,6 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 
 import org.hibernate.annotations.CreationTimestamp;
-import org.springframework.lang.Nullable;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -44,7 +41,6 @@ public class Usuario {
     @Column(nullable = false, columnDefinition = "datetime")
     private LocalDateTime dataCadastro;
 
-    @JsonIgnore
     @ManyToMany
     @JoinTable(name = "usuario_grupo",
         joinColumns = @JoinColumn(name = "usuario_id"),
