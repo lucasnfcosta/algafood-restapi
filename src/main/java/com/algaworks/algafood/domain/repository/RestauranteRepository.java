@@ -15,6 +15,6 @@ public interface RestauranteRepository
 
     List<Restaurante> findByNomeContainingAndCozinhaId(String nome, Long cozinhaId);
 
-    @Query("from Restaurante r join r.cozinha left join fetch r.formasPagamento")
+    @Query("from Restaurante r join r.cozinha")
     List<Restaurante> findAll();
 }
