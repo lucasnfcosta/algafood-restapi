@@ -45,7 +45,7 @@ public class CidadeController {
     public Cidade adicionar(@RequestBody Cidade cidade) {
         try {
             return cadastroCidade.salvar(cidade);
-        } catch (Exception e) {
+        } catch (EntidadeNaoExisteException e) {
             throw new NegocioException(e.getMessage());
         }
     }
