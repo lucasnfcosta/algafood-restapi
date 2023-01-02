@@ -10,21 +10,24 @@ import com.algaworks.algafood.domain.exception.EntidadeNaoExisteException;
 import com.algaworks.algafood.domain.model.Cidade;
 import com.algaworks.algafood.domain.model.Estado;
 import com.algaworks.algafood.domain.repository.CidadeRepository;
-import com.algaworks.algafood.domain.repository.EstadoRepository;
 
 @Service
 public class CadastroCidadeService {
     
+    private static final String MSG_ENTIDADE_NAO_EXISTE = "A cidade de id %d não existe";
+
+    private static final String MSG_ENTIDADE_EM_USO = "A cidade de id %d está em uso";
+
     @Autowired
     private CidadeRepository cidadeRepository;
 
     @Autowired
-    private EstadoRepository estadoRepository;
+    private CadastroEstadoService estadoService;
 
     public Cidade salvar(Cidade cidade) {
         Long estadoId = cidade.getEstado().getId();
-        Estado estado = estadoRepository.findById(estadoId)
-            .orElseThrow(() -> new EntidadeNaoExisteException(String.format("Estado com o id %d não existe", estadoId)));
+
+        Estado estado = estadoService.buscarOuFalhar(estadoId);
 
         cidade.setEstado(estado);
 
@@ -36,9 +39,14 @@ public class CadastroCidadeService {
         try {
             cidadeRepository.deleteById(id);
         } catch (EmptyResultDataAccessException e) {
-            throw new EntidadeNaoExisteException(String.format("A cidade de id %d não existe", id));
+            throw new EntidadeNaoExisteException(String.format(MSG_ENTIDADE_NAO_EXISTE, id));
         } catch (DataIntegrityViolationException e) {
-            throw new EntidadeEmUsoException(String.format("A cidade de id %d está em uso", id));
+            throw new EntidadeEmUsoException(String.format(MSG_ENTIDADE_EM_USO, id));
         }
+    }
+
+    public Cidade buscarOuFalhar(Long id) {
+        return cidadeRepository.findById(id)
+            .orElseThrow(() -> new EntidadeNaoExisteException(String.format(MSG_ENTIDADE_NAO_EXISTE, id)));
     }
 }
