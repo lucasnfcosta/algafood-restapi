@@ -20,7 +20,9 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
     @ExceptionHandler(EntidadeNaoExisteException.class)
     public ResponseEntity<?> trataEntidadeNaoExisteException(EntidadeNaoExisteException ex, WebRequest request) {
 
-        return handleExceptionInternal(ex, ex.getMessage(), new HttpHeaders(), HttpStatus.NOT_FOUND, request);
+        Problema problema = createProblemBuilder(ProblemaType.ENTIDADE_NAO_EXISTE, HttpStatus.NOT_FOUND.value(), ex.getMessage()).build();
+
+        return handleExceptionInternal(ex, problema, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
     }
 
     @ExceptionHandler(NegocioException.class)
@@ -41,16 +43,24 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
         
                 if (body == null) {
                     body = Problema.builder()
-                        .dataHora(LocalDateTime.now())
-                        .mensagem(status.getReasonPhrase())
+                        .title(status.getReasonPhrase())
+                        .status(status.value())
                         .build();
                 } else if (body instanceof String) {
                     body = Problema.builder()
-                        .dataHora(LocalDateTime.now())
-                        .mensagem(ex.getMessage())
+                        .status(status.value())
+                        .title((String) body)
                         .build();
                 }
 
         return super.handleExceptionInternal(ex, body, headers, status, request);
+    }
+
+    private Problema.ProblemaBuilder createProblemBuilder(ProblemaType problemaType, Integer status, String details) {
+        return Problema.builder()
+            .type(problemaType.getType())
+            .title(problemaType.getTitle())
+            .status(status)
+            .details(details);
     }
 }
