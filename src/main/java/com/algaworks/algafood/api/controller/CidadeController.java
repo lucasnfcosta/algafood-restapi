@@ -76,27 +76,4 @@ public class CidadeController {
         cadastroCidade.remover(id);
     }
 
-    @ExceptionHandler(EntidadeNaoExisteException.class)
-    public ResponseEntity<?> trataEntidadeNaoExisteException(EntidadeNaoExisteException e) {
-        Problema problema = Problema.builder()
-            .dataHora(LocalDateTime.now())
-            .mensagem(e.getMessage())
-            .build();
-
-        return ResponseEntity
-            .status(HttpStatus.NOT_FOUND)
-            .body(problema);
-    }
-
-    @ExceptionHandler(NegocioException.class)
-    public ResponseEntity<?> trataNegocioException(NegocioException e) {
-        Problema problema = Problema.builder()
-            .dataHora(LocalDateTime.now())
-            .mensagem(e.getMessage())
-            .build();
-
-        return ResponseEntity
-            .status(HttpStatus.BAD_REQUEST)
-            .body(problema);
-    }
 }
