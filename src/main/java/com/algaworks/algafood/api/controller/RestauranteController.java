@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.algaworks.algafood.domain.exception.CozinhaNaoExisteException;
 import com.algaworks.algafood.domain.exception.EntidadeNaoExisteException;
 import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.model.Restaurante;
@@ -50,8 +51,8 @@ public class RestauranteController {
     public Restaurante adicionar(@RequestBody Restaurante restaurante) {
         try {
             return cadastroRestaurante.salvar(restaurante);
-        } catch (EntidadeNaoExisteException e) {
-            throw new NegocioException(e.getMessage());
+        } catch (CozinhaNaoExisteException e) {
+            throw new NegocioException(e.getMessage(), e);
         }
     }
 
@@ -63,8 +64,8 @@ public class RestauranteController {
             BeanUtils.copyProperties(restaurante, restauranteAtual, "id", "formasPagamento", "endereco", "dataCadastro", "produtos");
         
             return cadastroRestaurante.salvar(restauranteAtual);
-        } catch (EntidadeNaoExisteException e) {
-            throw new NegocioException(e.getMessage());
+        } catch (CozinhaNaoExisteException e) {
+            throw new NegocioException(e.getMessage(), e);
         }
     }
 

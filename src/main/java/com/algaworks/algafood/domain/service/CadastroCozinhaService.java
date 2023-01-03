@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import com.algaworks.algafood.domain.exception.CozinhaNaoExisteException;
 import com.algaworks.algafood.domain.exception.EntidadeEmUsoException;
-import com.algaworks.algafood.domain.exception.EntidadeNaoExisteException;
 import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.repository.CozinhaRepository;
 
@@ -15,8 +14,6 @@ import com.algaworks.algafood.domain.repository.CozinhaRepository;
 public class CadastroCozinhaService {
 
     private static final String COZINHA_EM_USO = "A cozinha de id %d está em uso e não pode ser removida.";
-
-    private static final String COZINHA_NAO_EXISTE = "A cozinha de id %d não existe.";
     
     @Autowired
     private CozinhaRepository cozinhaRepository;
