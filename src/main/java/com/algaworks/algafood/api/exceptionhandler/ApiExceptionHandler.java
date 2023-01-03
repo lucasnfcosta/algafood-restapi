@@ -2,63 +2,55 @@ package com.algaworks.algafood.api.exceptionhandler;
 
 import java.time.LocalDateTime;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.HttpMediaTypeNotSupportedException;
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import com.algaworks.algafood.domain.exception.EntidadeEmUsoException;
 import com.algaworks.algafood.domain.exception.EntidadeNaoExisteException;
 import com.algaworks.algafood.domain.exception.NegocioException;
 
 @ControllerAdvice
-public class ApiExceptionHandler {
+public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
     @ExceptionHandler(EntidadeNaoExisteException.class)
-    public ResponseEntity<?> trataEntidadeNaoExisteException(EntidadeNaoExisteException e) {
-        Problema problema = Problema.builder()
-            .dataHora(LocalDateTime.now())
-            .mensagem(e.getMessage())
-            .build();
+    public ResponseEntity<?> trataEntidadeNaoExisteException(EntidadeNaoExisteException ex, WebRequest request) {
 
-        return ResponseEntity
-            .status(HttpStatus.NOT_FOUND)
-            .body(problema);
+        return handleExceptionInternal(ex, ex.getMessage(), new HttpHeaders(), HttpStatus.NOT_FOUND, request);
     }
 
     @ExceptionHandler(NegocioException.class)
-    public ResponseEntity<?> trataNegocioException(NegocioException e) {
-        Problema problema = Problema.builder()
-            .dataHora(LocalDateTime.now())
-            .mensagem(e.getMessage())
-            .build();
+    public ResponseEntity<?> trataNegocioException(NegocioException ex, WebRequest request) {
 
-        return ResponseEntity
-            .status(HttpStatus.BAD_REQUEST)
-            .body(problema);
-    }
-
-    @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
-    public ResponseEntity<?> trataHttpMediaTypeNotSupportedException(HttpMediaTypeNotSupportedException e) {
-        Problema problema = Problema.builder()
-            .dataHora(LocalDateTime.now())
-            .mensagem("O tipo de mídia não é aceito.")
-            .build();
-
-        return ResponseEntity
-            .status(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
-            .body(problema);
+        return handleExceptionInternal(ex, ex.getMessage(), new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
 
     @ExceptionHandler(EntidadeEmUsoException.class)
-    public ResponseEntity<?> trataEntidadeEmUsoException(EntidadeEmUsoException e) {
-        Problema problema = Problema.builder()
-            .dataHora(LocalDateTime.now())
-            .mensagem(e.getMessage())
-            .build();
+    public ResponseEntity<?> trataEntidadeEmUsoException(EntidadeEmUsoException ex, WebRequest request) {
 
-        return ResponseEntity
-            .status(HttpStatus.CONFLICT)
-            .body(problema);
+        return handleExceptionInternal(ex, ex.getMessage(), new HttpHeaders(), HttpStatus.CONFLICT, request);
+    }
+
+    @Override
+    protected ResponseEntity<Object> handleExceptionInternal(Exception ex, @Nullable Object body, HttpHeaders headers,
+            HttpStatus status, WebRequest request) {
+        
+                if (body == null) {
+                    body = Problema.builder()
+                        .dataHora(LocalDateTime.now())
+                        .mensagem(status.getReasonPhrase())
+                        .build();
+                } else if (body instanceof String) {
+                    body = Problema.builder()
+                        .dataHora(LocalDateTime.now())
+                        .mensagem(ex.getMessage())
+                        .build();
+                }
+
+        return super.handleExceptionInternal(ex, body, headers, status, request);
     }
 }
