@@ -4,7 +4,9 @@ import lombok.Getter;
 
 @Getter
 public enum ProblemaType {
-    ENTIDADE_NAO_EXISTE("/entidade-nao-existe", "Entidade não existe.");
+    ENTIDADE_NAO_EXISTE("/entidade-nao-existe", "Entidade não existe."),
+    ENTIDADE_EM_USO("/entidade-em-uso", "Entidade em uso."),
+    NEGOCIO("/negocio", "Exceção de negócio.");
 
     private String type;
     private String title;

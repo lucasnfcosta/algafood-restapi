@@ -1,7 +1,5 @@
 package com.algaworks.algafood.api.exceptionhandler;
 
-import java.time.LocalDateTime;
-
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,21 +18,37 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
     @ExceptionHandler(EntidadeNaoExisteException.class)
     public ResponseEntity<?> trataEntidadeNaoExisteException(EntidadeNaoExisteException ex, WebRequest request) {
 
-        Problema problema = createProblemBuilder(ProblemaType.ENTIDADE_NAO_EXISTE, HttpStatus.NOT_FOUND.value(), ex.getMessage()).build();
+        ProblemaType problemaType = ProblemaType.ENTIDADE_NAO_EXISTE;
+        HttpStatus status = HttpStatus.NOT_FOUND;
+        String details = ex.getMessage();
 
-        return handleExceptionInternal(ex, problema, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
+        Problema problema = createProblemBuilder(problemaType, status.value(), details).build();
+
+        return handleExceptionInternal(ex, problema, new HttpHeaders(), status, request);
     }
 
     @ExceptionHandler(NegocioException.class)
     public ResponseEntity<?> trataNegocioException(NegocioException ex, WebRequest request) {
 
-        return handleExceptionInternal(ex, ex.getMessage(), new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+        ProblemaType problemaType = ProblemaType.NEGOCIO;
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        String details = ex.getMessage();
+
+        Problema problema = createProblemBuilder(problemaType, status.value(), details).build();
+
+        return handleExceptionInternal(ex, problema, new HttpHeaders(), status, request);
     }
 
     @ExceptionHandler(EntidadeEmUsoException.class)
     public ResponseEntity<?> trataEntidadeEmUsoException(EntidadeEmUsoException ex, WebRequest request) {
 
-        return handleExceptionInternal(ex, ex.getMessage(), new HttpHeaders(), HttpStatus.CONFLICT, request);
+        ProblemaType problemaType = ProblemaType.ENTIDADE_EM_USO;
+        HttpStatus status = HttpStatus.CONFLICT;
+        String details = ex.getMessage();
+
+        Problema problema = createProblemBuilder(problemaType, status.value(), details).build();
+
+        return handleExceptionInternal(ex, problema, new HttpHeaders(), status, request);
     }
 
     @Override
