@@ -3,7 +3,7 @@ package com.algaworks.algafood.domain.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.algaworks.algafood.domain.exception.EntidadeNaoExisteException;
+import com.algaworks.algafood.domain.exception.RestauranteNaoExisteException;
 import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.repository.RestauranteRepository;
@@ -29,7 +29,7 @@ public class CadastroRestauranteService {
 
     public Restaurante buscarOuFalhar(Long id) {
         return restauranteRepository.findById(id)
-            .orElseThrow(() -> new EntidadeNaoExisteException(String.format("Restaurante com id %d não existe", id)));
+            .orElseThrow(() -> new RestauranteNaoExisteException(id));
     }
 
 }

@@ -5,16 +5,14 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
+import com.algaworks.algafood.domain.exception.CidadeNaoExisteException;
 import com.algaworks.algafood.domain.exception.EntidadeEmUsoException;
-import com.algaworks.algafood.domain.exception.EntidadeNaoExisteException;
 import com.algaworks.algafood.domain.model.Cidade;
 import com.algaworks.algafood.domain.model.Estado;
 import com.algaworks.algafood.domain.repository.CidadeRepository;
 
 @Service
 public class CadastroCidadeService {
-    
-    private static final String MSG_ENTIDADE_NAO_EXISTE = "A cidade de id %d não existe";
 
     private static final String MSG_ENTIDADE_EM_USO = "A cidade de id %d está em uso";
 
@@ -39,7 +37,7 @@ public class CadastroCidadeService {
         try {
             cidadeRepository.deleteById(id);
         } catch (EmptyResultDataAccessException e) {
-            throw new EntidadeNaoExisteException(String.format(MSG_ENTIDADE_NAO_EXISTE, id));
+            throw new CidadeNaoExisteException(id);
         } catch (DataIntegrityViolationException e) {
             throw new EntidadeEmUsoException(String.format(MSG_ENTIDADE_EM_USO, id));
         }
@@ -47,6 +45,6 @@ public class CadastroCidadeService {
 
     public Cidade buscarOuFalhar(Long id) {
         return cidadeRepository.findById(id)
-            .orElseThrow(() -> new EntidadeNaoExisteException(String.format(MSG_ENTIDADE_NAO_EXISTE, id)));
+            .orElseThrow(() -> new CidadeNaoExisteException(id));
     }
 }
