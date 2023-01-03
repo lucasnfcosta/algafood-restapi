@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.algaworks.algafood.domain.exception.EntidadeNaoExisteException;
+import com.algaworks.algafood.domain.exception.EstadoNaoExisteException;
 import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.model.Cidade;
 import com.algaworks.algafood.domain.repository.CidadeRepository;
@@ -45,8 +46,8 @@ public class CidadeController {
     public Cidade adicionar(@RequestBody Cidade cidade) {
         try {
             return cadastroCidade.salvar(cidade);
-        } catch (EntidadeNaoExisteException e) {
-            throw new NegocioException(e.getMessage());
+        } catch (EstadoNaoExisteException e) {
+            throw new NegocioException(e.getMessage(), e);
         }
     }
 
@@ -57,8 +58,8 @@ public class CidadeController {
         try {
             BeanUtils.copyProperties(cidade, cidadeAtual, "id");
             return cadastroCidade.salvar(cidadeAtual);
-        } catch (EntidadeNaoExisteException e) {
-            throw new NegocioException(e.getMessage());
+        } catch (EstadoNaoExisteException e) {
+            throw new NegocioException(e.getMessage(), e);
         }
 
     }
