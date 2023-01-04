@@ -3,6 +3,7 @@ package com.algaworks.algafood.api.exceptionhandler;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -16,6 +17,19 @@ import com.algaworks.algafood.domain.exception.NegocioException;
 @ControllerAdvice
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
     @ExceptionHandler(EntidadeNaoExisteException.class)
+
+    @Override
+    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
+            HttpHeaders headers, HttpStatus status, WebRequest request) {
+
+            ProblemaType problemaType = ProblemaType.MENSAGEM_INCOMPREENSIVEL;
+            String details = "O corpo da requisição está inválido. Verifique erro de sintaxe.";
+    
+            Problema problema = createProblemBuilder(problemaType, status.value(), details).build();
+    
+            return handleExceptionInternal(ex, problema, new HttpHeaders(), status, request);
+    }
+
     public ResponseEntity<?> trataEntidadeNaoExisteException(EntidadeNaoExisteException ex, WebRequest request) {
 
         ProblemaType problemaType = ProblemaType.ENTIDADE_NAO_EXISTE;
