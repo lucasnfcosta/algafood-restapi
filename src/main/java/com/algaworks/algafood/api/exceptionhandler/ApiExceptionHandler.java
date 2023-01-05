@@ -17,6 +17,7 @@ import com.algaworks.algafood.domain.exception.EntidadeEmUsoException;
 import com.algaworks.algafood.domain.exception.EntidadeNaoExisteException;
 import com.algaworks.algafood.domain.exception.NegocioException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import com.fasterxml.jackson.databind.exc.PropertyBindingException;
 
 @ControllerAdvice
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
@@ -30,6 +31,8 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
 
             if (rootCause instanceof InvalidFormatException) {
                 return handleInvalidFormatException((InvalidFormatException) rootCause, headers, status, request);
+            } else if (rootCause instanceof PropertyBindingException) {
+                return handlePropertyBindingException((PropertyBindingException) rootCause, headers, status, request);
             }
 
             ProblemaType problemaType = ProblemaType.MENSAGEM_INCOMPREENSIVEL;
@@ -40,6 +43,21 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler{
             return handleExceptionInternal(ex, problema, new HttpHeaders(), status, request);
     }
 
+    private ResponseEntity<Object> handlePropertyBindingException(PropertyBindingException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        
+        String path = ex.getPath().stream()
+            .map(ref -> ref.getFieldName())
+            .collect(Collectors.joining("."));
+        
+        ProblemaType problemaType = ProblemaType.MENSAGEM_INCOMPREENSIVEL;
+        
+        String details = String.format("O campo informado '%s' é inválido ou inexistente para esse recurso.", path);
+
+        Problema problema = createProblemBuilder(problemaType, status.value(), details).build();
+        
+        return handleExceptionInternal(ex, problema, headers, status, request);
+    }
+    
     private ResponseEntity<Object> handleInvalidFormatException(InvalidFormatException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         
         String path = ex.getPath().stream()
